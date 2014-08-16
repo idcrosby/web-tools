@@ -1,4 +1,4 @@
 web-tools
 =========
 
-Collection of my commonly used tools
+Collection of my commonly used tools. Written in Go.
