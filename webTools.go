@@ -11,7 +11,6 @@ import (
 )
 
 func Base64Encode(encode []byte) string {
-	fmt.Println("encoding data...")
 	str := base64.StdEncoding.EncodeToString(encode)
 	return str
 }
