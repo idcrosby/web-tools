@@ -10,26 +10,38 @@ import (
 	"time"
 )
 
-func Base64Encode(encode []byte) string {
-	str := base64.StdEncoding.EncodeToString(encode)
+func Base64Encode(encode []byte, url bool) string {
+	var str string
+	if (url) {
+		str = base64.URLEncoding.EncodeToString(encode)
+	} else {
+		str = base64.StdEncoding.EncodeToString(encode)
+	}
+	
 	return str
 }
 
-func Base64Decode(decode string) []byte {
-	data, err := base64.StdEncoding.DecodeString(decode)
+func Base64Decode(decode string, url bool) []byte {
+	var data []byte
+	var err error
+	if (url) {
+		data, err = base64.URLEncoding.DecodeString(decode)
+	} else {
+		data, err = base64.StdEncoding.DecodeString(decode)
+	}
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Error Decoding:", err)
 		return nil
 	}
 	return data
 }
 
-func ValidateJson(bytes []byte) (buf []byte) {
+func ValidateJson(bytes []byte) (buf []byte, err error) {
 	var f interface{}
-	err := json.Unmarshal(bytes, &f)
+	err = json.Unmarshal(bytes, &f)
 	if err != nil {
-		fmt.Println("Error reading Json.")
-		return nil
+		fmt.Println("Error reading JSON: ", err)
+		return nil, err
 	}
 	buf, err = json.MarshalIndent(&f, "", "   ")
 	check(err)

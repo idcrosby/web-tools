@@ -7,7 +7,10 @@ Written in Go.
 TODO
 ====
 
+- Document (here)
 - Add Logging
 - Better Error Handling
-- More Functions?
-
+- JSON filtering (+forwarding/routing)
+- HATEOS Support/Validator/Creation/Expansion
+- AuthHeader constructor
+- OAuth stub?

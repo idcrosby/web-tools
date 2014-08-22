@@ -2,15 +2,13 @@ package myTools
 
 import (
 	"testing"
-	"fmt"
 	"time"
 )
 
 func TestBase64Encode(t *testing.T) {
-	fmt.Println("testing encode")
-	str := "JEBtcGxlICsgZGF0YSZ0b0VuYzBkZQ=="
-	data := []byte("$@mple + data&toEnc0de")
-	if x:= Base64Encode(data); x != str  {
+	str := "YWJjMTIzIT8kKiYoKSctPUB+"
+	data := []byte("abc123!?$*&()'-=@~")
+	if x:= Base64Encode(data, false); x != str  {
 		t.Errorf("Base64Encode(" + string(data) + ") = " + x + ", want " + str)
 	}	
 }
@@ -18,21 +16,37 @@ func TestBase64Encode(t *testing.T) {
 func TestBase64Decode(t *testing.T) {
 	str := "JEBtcGxlICsgZGF0YSZ0b0VuYzBkZQ=="
 	data := []byte("$@mple + data&toEnc0de")
-	if x := Base64Decode(str); string(x) != string(data) {
+	if x := Base64Decode(str, false); string(x) != string(data) {
+		t.Errorf("Base64Decode(" + str + ") = " + string(x) + ", want " + string(data))
+	}
+}
+
+func TestBase64UrlEncode(t *testing.T) {
+	str := "YWJjMTIzIT8kKiYoKSctPUB-"
+	data := []byte("abc123!?$*&()'-=@~")
+	if x:= Base64Encode(data, true); x != str  {
+		t.Errorf("Base64Encode(" + string(data) + ") = " + x + ", want " + str)
+	}	
+}
+
+func TestBase64UrlDecode(t *testing.T) {
+	str := "JEBtcGxlICsgZGF0YSZ0b0VuYzBkZQ=="
+	data := []byte("$@mple + data&toEnc0de")
+	if x := Base64Decode(str, true); string(x) != string(data) {
 		t.Errorf("Base64Decode(" + str + ") = " + string(x) + ", want " + string(data))
 	}
 }
 
 func TestValidateJsonValid(t *testing.T) {
 	validJson := []byte("{\"sample\":\"data\"}")
-	if x := ValidateJson(validJson); x == nil {
+	if x, err := ValidateJson(validJson); x == nil || err != nil {
 		t.Errorf("ValidateJson(" + string(validJson) + ") = nil")
 	}
 }
 
-func TestValidateJsonInValid(t *testing.T) {
+func TestValidateJsonInvalid(t *testing.T) {
 	invalidJson := []byte("{\"sample\":\"data\",\"missing\"}")
-	if x := ValidateJson(invalidJson); x != nil {
+	if x, err := ValidateJson(invalidJson); x != nil  || err == nil {
 		t.Errorf("ValidateJson(" + string(invalidJson) + ") = " + string(x) + ", want nil")
 	}
 }
