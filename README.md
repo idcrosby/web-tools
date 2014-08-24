@@ -21,6 +21,10 @@ Invalid input returns nil.
 
 Formats and returns the given JSON data. Invalid JSON will return nil and a descriptive error.
 
+`func FilterJson(bytes []byte, filter []string) (buf []byte, err error)`
+
+Removes *top-level* elements of the given JSON data with names listed in the filter array.
+
 `func Md5Hash(data []byte) string`
 
 Returns an MD5 hash string of the given data.

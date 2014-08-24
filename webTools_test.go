@@ -1,6 +1,7 @@
 package myTools
 
 import (
+	"strings"
 	"testing"
 	"time"
 )
@@ -48,6 +49,16 @@ func TestValidateJsonInvalid(t *testing.T) {
 	invalidJson := []byte("{\"sample\":\"data\",\"missing\"}")
 	if x, err := ValidateJson(invalidJson); x != nil  || err == nil {
 		t.Errorf("ValidateJson(" + string(invalidJson) + ") = " + string(x) + ", want nil")
+	}
+}
+
+func TestFilterJson(t *testing.T) {
+	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+	jsonOut := "{\n\"keep\":\"goodData\"\n}"
+	filter := []string{"remove"}
+
+	if x, err := FilterJson(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
+		t.Errorf("FilterJson(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
 	}
 }
 

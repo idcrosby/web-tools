@@ -48,6 +48,24 @@ func ValidateJson(bytes []byte) (buf []byte, err error) {
 	return
 }
 
+func FilterJson(bytes []byte, filter []string) (buf []byte, err error) {
+	var f interface{}
+	err = json.Unmarshal(bytes, &f)
+	if err != nil {
+		fmt.Println("Error reading JSON: ", err)
+		return nil, err
+	}
+	// Access the data's underlying interface
+	m := f.(map[string]interface{})
+
+	for _,element := range filter {
+		delete(m, element)
+	}
+	buf, err = json.MarshalIndent(&m, "", "   ")
+	check(err)
+	return
+}
+
 func Md5Hash(data []byte) string {
 	h := md5.New()
 	h.Write(data)
