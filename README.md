@@ -48,6 +48,8 @@ Convers the given Unix Epoch time stamp to Time type.
 - Add Logging
 - Better Error Handling
 - JSON filtering (+forwarding/routing)
+	- Improve filtering perofrmance (streaming)
+	- blacklist/whitelist
 - HATEOS Support/Validator/Creation/Expansion
 - AuthHeader constructor
 - OAuth stub?

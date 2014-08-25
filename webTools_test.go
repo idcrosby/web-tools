@@ -22,6 +22,13 @@ func TestBase64Decode(t *testing.T) {
 	}
 }
 
+func TestBase64DecodeBadData(t *testing.T) {
+	str := "Jdsadsad$$#@CsgZGF0YSZ0b0VuYzBkZQ=="
+	if x := Base64Decode(str, false); x != nil {
+		t.Errorf("Base64Decode(" + str + ") = " + string(x) + ", want nil")
+	}
+}
+
 func TestBase64UrlEncode(t *testing.T) {
 	str := "YWJjMTIzIT8kKiYoKSctPUB-"
 	data := []byte("abc123!?$*&()'-=@~")
@@ -59,6 +66,35 @@ func TestFilterJson(t *testing.T) {
 
 	if x, err := FilterJson(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
 		t.Errorf("FilterJson(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	}
+}
+
+func TestDeepFilterJson(t *testing.T) {
+	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true}}")
+	jsonOut := "{\n\"keep\":\"goodData\",\n\"remove\":{\n\"subTwo\":true\n}\n}"
+	filter := []string{"remove.subOne"}
+
+	if x, err := FilterJson(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
+		t.Errorf("FilterJson(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	}
+}
+
+func TestDeepMultiFilterJson(t *testing.T) {
+	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true}}")
+	jsonOut := "{\n\"remove\":{\n\"subTwo\":true\n}\n}"
+	filter := []string{"remove.subOne","keep"}
+
+	if x, err := FilterJson(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
+		t.Errorf("FilterJson(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	}
+}
+
+func TestFilterBadJson(t *testing.T) {
+	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":bad data}")
+	filter := []string{"remove"}
+
+	if x, err := FilterJson(jsonIn, filter); x != nil || err == nil {
+		t.Errorf("FilterJson(" + string(jsonIn) + ") = " + string(x) + ", want nil")
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -59,6 +60,16 @@ func FilterJson(bytes []byte, filter []string) (buf []byte, err error) {
 	m := f.(map[string]interface{})
 
 	for _,element := range filter {
+		subEls := strings.Split(element,".")
+		node := m
+		for index,sub := range subEls {
+			//Check if last element
+			if (index >= (len(subEls) -1)) {
+				delete(node, sub)
+			} else {
+				node = m[sub].(map[string]interface{})
+			}
+		}
 		delete(m, element)
 	}
 	buf, err = json.MarshalIndent(&m, "", "   ")
