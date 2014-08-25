@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+
+// Basic Unit Tests
+
 func TestBase64Encode(t *testing.T) {
 	str := "YWJjMTIzIT8kKiYoKSctPUB+"
 	data := []byte("abc123!?$*&()'-=@~")
@@ -17,14 +20,14 @@ func TestBase64Encode(t *testing.T) {
 func TestBase64Decode(t *testing.T) {
 	str := "JEBtcGxlICsgZGF0YSZ0b0VuYzBkZQ=="
 	data := []byte("$@mple + data&toEnc0de")
-	if x := Base64Decode(str, false); string(x) != string(data) {
+	if x, err := Base64Decode(str, false); string(x) != string(data) || err != nil {
 		t.Errorf("Base64Decode(" + str + ") = " + string(x) + ", want " + string(data))
 	}
 }
 
 func TestBase64DecodeBadData(t *testing.T) {
 	str := "Jdsadsad$$#@CsgZGF0YSZ0b0VuYzBkZQ=="
-	if x := Base64Decode(str, false); x != nil {
+	if x, err := Base64Decode(str, false); x != nil || err == nil {
 		t.Errorf("Base64Decode(" + str + ") = " + string(x) + ", want nil")
 	}
 }
@@ -40,7 +43,7 @@ func TestBase64UrlEncode(t *testing.T) {
 func TestBase64UrlDecode(t *testing.T) {
 	str := "JEBtcGxlICsgZGF0YSZ0b0VuYzBkZQ=="
 	data := []byte("$@mple + data&toEnc0de")
-	if x := Base64Decode(str, true); string(x) != string(data) {
+	if x, err := Base64Decode(str, true); string(x) != string(data) || err != nil {
 		t.Errorf("Base64Decode(" + str + ") = " + string(x) + ", want " + string(data))
 	}
 }
@@ -133,3 +136,63 @@ func TestConvertTimeFromEpoch(t *testing.T) {
 	}
 }
 
+// Benchmark Tests
+
+func BenchmarkBase64Encode(b *testing.B) {
+	data := []byte("abc123!?$*&()'-=@~")
+	for i := 0; i < b.N; i++ {
+		Base64Encode(data, false)
+	}
+}
+
+func BenchmarkBase64Decode(b *testing.B) {
+	data := "JEBtcGxlICsgZGF0YSZ0b0VuYzBkZQ=="
+	for i := 0; i < b.N; i++ {
+		Base64Decode(data, false)
+	}
+}
+
+func BenchmarkValidateJson(b *testing.B) {
+	data := []byte("{\"sample\":\"data\"}")
+	for i := 0; i < b.N; i++ {
+		ValidateJson(data)
+	}
+}
+
+func BenchmarkFilterJson(b *testing.B) {
+	data := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+	filter := []string{"remove"}
+	for i := 0; i < b.N; i++ {
+		FilterJson(data, filter)
+	}
+}
+
+func BenchmarkMd5Hash(b *testing.B) {
+	data := []byte("h@$H_th1s *tr1ng")
+	for i := 0; i < b.N; i++ {
+		Md5Hash(data)
+	}
+}
+
+func BenchmarkSha1Hash(b *testing.B) {
+	data := []byte("h@$H_th1s *tr1ng")
+	for i := 0; i < b.N; i++ {
+		Sha1Hash(data)
+	}
+}
+
+func BenchmarkConvertTimeToEpoch(b *testing.B) {
+	timeString := "2014-08-15 15:27:14 +0200 CEST"
+	data, _ := time.Parse("2006-01-02 15:04:05 -0700 MST", timeString)
+	for i := 0; i < b.N; i++ {
+		ConvertTimeToEpoch(data)
+	}
+}
+
+func BenchmarkConvertTimeFromEpoch(b *testing.B) {
+	var data int64
+	data = 1408109234
+	for i := 0; i < b.N; i++ {
+		ConvertTimeFromEpoch(data)
+	}
+}

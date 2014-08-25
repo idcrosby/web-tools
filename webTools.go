@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 )
@@ -22,26 +21,22 @@ func Base64Encode(encode []byte, url bool) string {
 	return str
 }
 
-func Base64Decode(decode string, url bool) []byte {
-	var data []byte
-	var err error
+func Base64Decode(decode string, url bool) (buf []byte, err error) {
 	if (url) {
-		data, err = base64.URLEncoding.DecodeString(decode)
+		buf, err = base64.URLEncoding.DecodeString(decode)
 	} else {
-		data, err = base64.StdEncoding.DecodeString(decode)
+		buf, err = base64.StdEncoding.DecodeString(decode)
 	}
 	if err != nil {
-		fmt.Println("Error Decoding:", err)
-		return nil
+		buf = nil
 	}
-	return data
+	return
 }
 
 func ValidateJson(bytes []byte) (buf []byte, err error) {
 	var f interface{}
 	err = json.Unmarshal(bytes, &f)
 	if err != nil {
-		fmt.Println("Error reading JSON: ", err)
 		return nil, err
 	}
 	buf, err = json.MarshalIndent(&f, "", "   ")
@@ -53,7 +48,6 @@ func FilterJson(bytes []byte, filter []string) (buf []byte, err error) {
 	var f interface{}
 	err = json.Unmarshal(bytes, &f)
 	if err != nil {
-		fmt.Println("Error reading JSON: ", err)
 		return nil, err
 	}
 	// Access the data's underlying interface
