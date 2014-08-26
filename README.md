@@ -21,9 +21,13 @@ Invalid input returns nil.
 
 Formats and returns the given JSON data. Invalid JSON will return nil and a descriptive error.
 
-`func FilterJson(bytes []byte, filter []string) (buf []byte, err error)`
+`func JsonNegativeFilter(bytes []byte, filter []string) (buf []byte, err error)`
 
-Removes *top-level* elements of the given JSON data with names listed in the filter array.
+Removes elements of the given JSON data with names listed in the filter array (use dot separated names for nested fields)
+
+`func JsonPositiveFilter(bytes []byte, filter []string) (buf []byte, err error)`
+
+Keeps only the elements of the given JSON data with names listed in the filter array. (Top level fields only)
 
 `func Md5Hash(data []byte) string`
 
@@ -50,9 +54,9 @@ Convers the given Unix Epoch time stamp to Time type.
 - Add Logging
 - Better Error Handling
 - JSON filtering (+forwarding/routing)
-	- Improve filtering perofrmance (streaming)
-	- blacklist/whitelist
+	- Improve filtering performance (streaming)
 
 - HATEOS Support/Validator/Creation/Expansion
 - AuthHeader constructor
 - OAuth stub?
+- Add Filters to Test Outputs
