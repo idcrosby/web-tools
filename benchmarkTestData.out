@@ -1,14 +1,12 @@
-Error Decoding: illegal base64 data at input byte 8
-Error reading JSON:  invalid character '}' after object key
-Error reading JSON:  invalid character 'b' looking for beginning of value
 PASS
-BenchmarkBase64Encode	10000000	       284 ns/op
-BenchmarkBase64Decode	 1000000	      1104 ns/op
-BenchmarkValidateJson	  500000	      5124 ns/op
-BenchmarkFilterJson	  500000	      6078 ns/op
-BenchmarkMd5Hash	 5000000	       643 ns/op
-BenchmarkSha1Hash	 5000000	       730 ns/op
-BenchmarkConvertTimeToEpoch	1000000000	         2.60 ns/op
-BenchmarkConvertTimeFromEpoch	500000000	         5.51 ns/op
-coverage: 98.0% of statements
-ok  	github.com/idcrosby/web-tools	24.447s
+BenchmarkBase64Encode	10000000	       269 ns/op
+BenchmarkBase64Decode	 1000000	      1051 ns/op
+BenchmarkValidateJson	  500000	      5076 ns/op
+BenchmarkJsonNegativeFilter	  500000	      6010 ns/op
+BenchmarkJsonPositiveFilter	  500000	      6516 ns/op
+BenchmarkJsonCompare	  200000	     10836 ns/op
+BenchmarkMd5Hash	 5000000	       637 ns/op
+BenchmarkSha1Hash	 5000000	       721 ns/op
+BenchmarkConvertTimeToEpoch	1000000000	         2.87 ns/op
+BenchmarkConvertTimeFromEpoch	500000000	         6.11 ns/op
+ok  	github.com/idcrosby/web-tools	30.324s

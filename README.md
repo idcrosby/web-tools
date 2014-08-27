@@ -55,8 +55,9 @@ Convers the given Unix Epoch time stamp to Time type.
 - Better Error Handling
 - JSON filtering (+forwarding/routing)
 	- Improve filtering performance (streaming)
-
+- XML <-> JSON conversion?
 - HATEOS Support/Validator/Creation/Expansion
 - AuthHeader constructor
 - OAuth stub?
 - Add Filters to Test Outputs
+- fix tests, individual checks

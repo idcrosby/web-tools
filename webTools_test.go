@@ -160,6 +160,33 @@ func TestBadJsonPositiveFilterSingle(t *testing.T) {
 	}
 }
 
+func TestJsonCompareNoDiff(t *testing.T) {
+	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+	result := "{}"
+
+	if x, err := JsonCompare(jsonIn, jsonIn); string(x) != result || err != nil {
+		if err != nil {
+			t.Errorf("JsonCompare(" + string(jsonIn) + ", " + string(jsonIn) + ") throwing Error: " + err.Error())
+		} else {
+			t.Errorf("JsonCompare(" + string(jsonIn) + ", " + string(jsonIn) + ") = " + string(x) + ", want " + result)
+		}
+	}
+}
+
+func TestJsonCompareSimple(t *testing.T) {
+	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+	jsonTwo := []byte("{\"keep\":\"other_data\",\"remove\":\"bad data\"}")
+	result := "{\n\"keep_1\":\"goodData\",\n\"keep_2\":\"other_data\"\n}"
+
+	if x, err := JsonCompare(jsonOne, jsonTwo); strings.Replace(string(x)," ","",-1) != result || err != nil {
+		if err != nil {
+			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") throwing Error: " + err.Error())
+		} else {
+			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") = " + string(x) + ", want " + result)
+		}
+	}
+}
+
 func TestMd5Hash(t *testing.T) {
 	data := []byte("h@$H_th1s *tr1ng")
 	hash := "7952b401cd8a52dc40536d7e1b4c6658"
@@ -236,6 +263,14 @@ func BenchmarkJsonPositiveFilter(b *testing.B) {
 	filter := []string{"keep"}
 	for i := 0; i < b.N; i++ {
 		JsonPositiveFilter(data, filter)
+	}
+}
+
+func BenchmarkJsonCompare(b * testing.B) {
+	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+	jsonTwo := []byte("{\"keep\":\"other_data\",\"remove\":\"bad data\"}")
+	for i := 0; i < b.N; i++ {
+		JsonCompare(jsonOne, jsonTwo)
 	}
 }
 

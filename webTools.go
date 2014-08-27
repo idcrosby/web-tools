@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -105,6 +106,30 @@ func JsonPositiveFilter(bytes []byte, filter []string) (buf []byte, err error) {
 	return
 }
 
+func JsonCompare(jsonOne []byte, jsonTwo []byte) (buf []byte, err error) {
+	// var result map[string]interface{}
+	// result = make(map[string]interface{})
+
+	var f,g interface{}
+	err = json.Unmarshal(jsonOne, &f)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(jsonTwo, &g)
+	if err != nil {
+		return nil, err
+	}
+	// Access the data's underlying interface
+	m1 := f.(map[string]interface{})
+	m2 := g.(map[string]interface{})
+
+	result := CompareJson(m1, m2)
+
+	buf, err = json.MarshalIndent(&result, "", "   ")
+	check(err)
+	return
+}
+
 // TODO Deprecated - Keeping for potential performance comparison
 // func JsonPositiveFilterSingle(bytes []byte, filter []string) (buf []byte, err error) {
 // 	var f interface{}
@@ -177,6 +202,27 @@ func MergeJson(input map[string]interface{}, subEls []string, el interface{}) ma
 	}	
 	result[subEls[0]] = MergeJson(node, subEls[1:], el)
 
+	return result
+}
+
+func CompareJson(m1 map[string]interface{}, m2 map[string]interface{}) map[string]interface{} {
+	var result map[string]interface{}
+	result = make(map[string]interface{})
+
+	for k, el := range m1 {
+		if el2,ok := m2[k]; ok {
+			if reflect.ValueOf(el).Kind() != reflect.Map {
+				if el != el2 {
+					result[k + "_1"] = el //"diff" //el + "/" + el2
+					result[k + "_2"] = el2
+				}
+			} else {
+				result[k] = CompareJson(el.(map[string]interface{}), el2.(map[string]interface{}))
+			}
+		} else {
+			result[k] = el
+		}
+	}
 	return result
 }
 
