@@ -211,19 +211,43 @@ func CompareJson(m1 map[string]interface{}, m2 map[string]interface{}) map[strin
 
 	for k, el := range m1 {
 		if el2,ok := m2[k]; ok {
-			if reflect.ValueOf(el).Kind() != reflect.Map {
+			if reflect.ValueOf(el).Kind() == reflect.Map {
+				subCompare := CompareJson(el.(map[string]interface{}), el2.(map[string]interface{}))
+				if len(subCompare) > 0 {
+					result[k] = subCompare
+				}
+			} else if reflect.ValueOf(el).Kind() == reflect.Slice {
+				if !CompareSlices(el.([]interface{}), el2.([]interface{})) {
+					result[k + "_1"] = el
+					result[k + "_2"] = el2
+				}
+			} else {
 				if el != el2 {
 					result[k + "_1"] = el //"diff" //el + "/" + el2
 					result[k + "_2"] = el2
 				}
-			} else {
-				result[k] = CompareJson(el.(map[string]interface{}), el2.(map[string]interface{}))
 			}
 		} else {
 			result[k] = el
 		}
 	}
 	return result
+}
+
+// Compares two slices, returns true only if they contain the same elements in the same order
+func CompareSlices(s1 []interface{}, s2 []interface{}) bool {
+
+	if len(s1) != len(s2) {
+		return false
+	}
+
+	for ix,el := range s1 {
+		if s2[ix] != el {
+			return false
+		}
+	}
+
+	return true
 }
 
 func check(err error) { if err != nil { panic(err) } }

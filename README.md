@@ -29,6 +29,10 @@ Removes elements of the given JSON data with names listed in the filter array (u
 
 Keeps only the elements of the given JSON data with names listed in the filter array. (Top level fields only)
 
+`func JsonCompare(jsonOne []byte, jsonTwo []byte) (buf []byte, err error)`
+
+Compares two JSON objects, and returnsa JSON object containing any differing elements.
+
 `func Md5Hash(data []byte) string`
 
 Returns an MD5 hash string of the given data.
@@ -48,16 +52,16 @@ Convers the given Unix Epoch time stamp to Time type.
 
 ## TODO List
 
-- Document (here)
 - Automate tests/coverage/performance(siege)
 	- Travis CI?
-- Add Logging
-- Better Error Handling
 - JSON filtering (+forwarding/routing)
 	- Improve filtering performance (streaming)
+	- Augment JSON comparison
 - XML <-> JSON conversion?
 - HATEOS Support/Validator/Creation/Expansion
 - AuthHeader constructor
 - OAuth stub?
 - Add Filters to Test Outputs
-- fix tests, individual checks
+- Tests
+	- individual checks
+- Add Logging

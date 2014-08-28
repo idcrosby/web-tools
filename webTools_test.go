@@ -58,47 +58,47 @@ func TestValidateJsonValid(t *testing.T) {
 func TestValidateJsonInvalid(t *testing.T) {
 	invalidJson := []byte("{\"sample\":\"data\",\"missing\"}")
 	if x, err := ValidateJson(invalidJson); x != nil  || err == nil {
-		t.Errorf("ValidateJson(" + string(invalidJson) + ") = " + string(x) + ", want nil")
+		t.Errorf("ValidateJson(" + string(invalidJson) + ") = " + removeWhiteSpace(string(x)) + ", want nil")
 	}
 }
 
 func TestJsonNegativeFilter(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
-	jsonOut := "{\n\"keep\":\"goodData\"\n}"
+	jsonOut := "{\"keep\":\"goodData\"}"
 	filter := []string{"remove"}
 
-	if x, err := JsonNegativeFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonNegativeFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
 func TestDeepJsonNegativeFilter(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true}}")
-	jsonOut := "{\n\"keep\":\"goodData\",\n\"remove\":{\n\"subTwo\":true\n}\n}"
+	jsonOut := "{\"keep\":\"goodData\",\"remove\":{\"subTwo\":true}}"
 	filter := []string{"remove.subOne"}
 
-	if x, err := JsonNegativeFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonNegativeFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
 func TestDeepMultiJsonNegativeFilter(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true,\"subThree\":{\"deepRemove\":false}}}")
-	jsonOut := "{\n\"remove\":{\n\"subThree\":{\n\"deepRemove\":false\n},\n\"subTwo\":true\n}\n}"
+	jsonOut := "{\"remove\":{\"subThree\":{\"deepRemove\":false},\"subTwo\":true}}"
 	filter := []string{"remove.subOne","keep","remove.subThree.missing"}
 
-	if x, err := JsonNegativeFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonNegativeFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
 func TestDeepMultiJsonNegativeFilterTwo(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true,\"subThree\":{\"deepRemove\":false}}}")
-	jsonOut := "{\n\"remove\":{\n\"subThree\":{},\n\"subTwo\":true\n}\n}"
+	jsonOut := "{\"remove\":{\"subThree\":{},\"subTwo\":true}}"
 	filter := []string{"remove.subOne","keep","remove.subThree.deepRemove"}
 
-	if x, err := JsonNegativeFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonNegativeFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
@@ -107,47 +107,47 @@ func TestBadJsonNegativeFilter(t *testing.T) {
 	filter := []string{"remove"}
 
 	if x, err := JsonNegativeFilter(jsonIn, filter); x != nil || err == nil {
-		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + ") = " + string(x) + ", want nil")
+		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want nil")
 	}
 }
 
 func TestJsonPositiveFilterSingle(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
-	jsonOut := "{\n\"keep\":\"goodData\"\n}"
+	jsonOut := "{\"keep\":\"goodData\"}"
 	filter := []string{"keep"}
 
-	if x, err := JsonPositiveFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonPositiveFilterSingle(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonPositiveFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
 func TestDeepJsonPositiveFilter(t *testing.T) {
 	jsonIn := []byte("{\"keepMe\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true}}")
-	jsonOut := "{\n\"keepMe\":\"goodData\",\n\"remove\":{\n\"subTwo\":true\n}\n}"
+	jsonOut := "{\"keepMe\":\"goodData\",\"remove\":{\"subTwo\":true}}"
 	filter := []string{"keepMe","remove.subTwo"}
 
-	if x, err := JsonPositiveFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonPositiveFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
 func TestDeepMultiJsonPositiveFilter(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}")
-	jsonOut := "{\n\"keep\":\"goodData\",\n\"remove\":{\n\"subOne\":\"bad_data\",\n\"subTwo\":true\n}\n}"
+	jsonOut := "{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}"
 	filter := []string{"remove","keep"}
 
-	if x, err := JsonPositiveFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonPositiveFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
 func TestJsonPositiveFilterAnother(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}")
-	jsonOut := "{\n\"keep\":\"goodData\",\n\"remove\":{\n\"subOne\":\"bad_data\",\n\"subTwo\":true\n}\n}"
+	jsonOut := "{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}"
 	filter := []string{"remove.subOne","keep","remove.subTwo"}
 
-	if x, err := JsonPositiveFilter(jsonIn, filter); strings.Replace(string(x)," ","",-1) != jsonOut || err != nil {
-		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + ") = " + strings.Replace(string(x)," ","",-1) + ", want " + string(jsonOut))
+	if x, err := JsonPositiveFilter(jsonIn, filter); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
 	}
 }
 
@@ -156,7 +156,7 @@ func TestBadJsonPositiveFilterSingle(t *testing.T) {
 	filter := []string{"keep"}
 
 	if x, err := JsonPositiveFilter(jsonIn, filter); x != nil || err == nil {
-		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + ") = " + string(x) + ", want nil")
+		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want nil")
 	}
 }
 
@@ -164,26 +164,72 @@ func TestJsonCompareNoDiff(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
 	result := "{}"
 
-	if x, err := JsonCompare(jsonIn, jsonIn); string(x) != result || err != nil {
+	if x, err := JsonCompare(jsonIn, jsonIn); removeWhiteSpace(string(x)) != result || err != nil {
 		if err != nil {
 			t.Errorf("JsonCompare(" + string(jsonIn) + ", " + string(jsonIn) + ") throwing Error: " + err.Error())
 		} else {
-			t.Errorf("JsonCompare(" + string(jsonIn) + ", " + string(jsonIn) + ") = " + string(x) + ", want " + result)
+			t.Errorf("JsonCompare(" + string(jsonIn) + ", " + string(jsonIn) + ") = " + removeWhiteSpace(string(x)) + ", want " + result)
 		}
 	}
 }
 
 func TestJsonCompareSimple(t *testing.T) {
-	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\",\"third\":false}")
 	jsonTwo := []byte("{\"keep\":\"other_data\",\"remove\":\"bad data\"}")
-	result := "{\n\"keep_1\":\"goodData\",\n\"keep_2\":\"other_data\"\n}"
+	result := "{\"keep_1\":\"goodData\",\"keep_2\":\"other_data\",\"third\":false}"
 
-	if x, err := JsonCompare(jsonOne, jsonTwo); strings.Replace(string(x)," ","",-1) != result || err != nil {
+	if x, err := JsonCompare(jsonOne, jsonTwo); removeWhiteSpace(string(x)) != result || err != nil {
 		if err != nil {
 			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") throwing Error: " + err.Error())
 		} else {
-			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") = " + string(x) + ", want " + result)
+			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") = " + removeWhiteSpace(string(x)) + ", want " + result)
 		}
+	}
+}
+
+func TestJsonCompareComplex(t *testing.T) {
+	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\",\"more\":[4,5],\"same\":[1,2,3]}")
+	jsonTwo := []byte("{\"keep\":{\"sub\":true},\"remove\":\"bad data\",\"more\":[4,5,6],\"same\":[1,2,3]}")
+	result := "{\"keep_1\":\"goodData\",\"keep_2\":{\"sub\":true},\"more_1\":[4,5],\"more_2\":[4,5,6]}"
+
+	if x, err := JsonCompare(jsonOne, jsonTwo); removeWhiteSpace(string(x)) != result || err != nil {
+		if err != nil {
+			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + removeWhiteSpace(string(jsonTwo)) + ") throwing Error: " + err.Error())
+		} else {
+			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + removeWhiteSpace(string(jsonTwo)) + ") = " + removeWhiteSpace(string(x)) + ", want " + result)
+		}
+	}
+}
+
+func TestJsonCompareMoar(t *testing.T) {
+	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\",\"more\":[4,5],\"bajs\":{\"gris\":null},\"anka\":{\"kaja\":1}}")
+	jsonTwo := []byte("{\"keep\":{\"sub\":true},\"remove\":\"bad data\",\"more\":[5,4],\"bajs\":{\"gris\":null},\"anka\":{\"kaja\":2}}")
+	result := "{\"anka\":{\"kaja_1\":1,\"kaja_2\":2},\"keep_1\":\"goodData\",\"keep_2\":{\"sub\":true},\"more_1\":[4,5],\"more_2\":[5,4]}"
+
+	if x, err := JsonCompare(jsonOne, jsonTwo); removeWhiteSpace(string(x)) != result || err != nil {
+		if err != nil {
+			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") throwing Error: " + err.Error())
+		} else {
+			t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") = " + removeWhiteSpace(string(x)) + ", want " + result)
+		}
+	}
+}
+
+func TestJsonCompareBadJsonOne(t *testing.T) {
+	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\",\"more\":[4,5]}")
+	jsonTwo := []byte("{\"keep\":{\"sub\":true},\"remove\":\"bad data\",\"more\":4,5,6]}")
+
+	if x, err := JsonCompare(jsonOne, jsonTwo); x != nil || err == nil {
+		t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") = " + removeWhiteSpace(string(x)) + ", want error")
+	}
+}
+
+func TestJsonCompareBadJsonTwo(t *testing.T) {
+	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data,\"more\":[4,5]}")
+	jsonTwo := []byte("{\"keep\":{\"sub\":true},\"remove\":\"bad data\",\"more\":[4,5,6]}")
+
+	if x, err := JsonCompare(jsonOne, jsonTwo); x != nil || err == nil {
+		t.Errorf("JsonCompare(" + string(jsonOne) + ", " + string(jsonTwo) + ") = " + removeWhiteSpace(string(x)) + ", want error")
 	}
 }
 
@@ -305,3 +351,14 @@ func BenchmarkConvertTimeFromEpoch(b *testing.B) {
 }
 
 // TODO Create Util function to compare JSON equivalence
+
+// Util Methods
+
+func arrayToString(input []string) (output string) {
+	for _, value := range input { output += string(value) }
+	return
+}
+
+func removeWhiteSpace(in string) (out string) {
+	return arrayToString(strings.Fields(in))
+}
