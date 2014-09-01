@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"net/url"
 	"reflect"
 	"strings"
 	"time"
@@ -31,6 +32,22 @@ func Base64Decode(decode string, url bool) (buf []byte, err error) {
 	if err != nil {
 		buf = nil
 	}
+	return
+}
+
+func UrlEncode(encode string) string {
+
+	return url.QueryEscape(encode)
+}
+
+func UrlDecode(decode string) (output string, err error) {
+
+	output, err = url.QueryUnescape(decode)
+
+	if err != nil {
+		output = ""
+	}
+
 	return
 }
 

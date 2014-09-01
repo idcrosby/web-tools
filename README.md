@@ -54,14 +54,13 @@ Convers the given Unix Epoch time stamp to Time type.
 
 - Automate tests/coverage/performance(siege)
 	- Travis CI?
-- JSON filtering (+forwarding/routing)
+- JSON filtering
 	- Improve filtering performance (streaming)
 	- Augment JSON comparison
 - XML <-> JSON conversion?
 - HATEOS Support/Validator/Creation/Expansion
 - AuthHeader constructor
 - OAuth stub?
-- Add Filters to Test Outputs
 - Tests
 	- individual checks
 - Add Logging
