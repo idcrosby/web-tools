@@ -89,6 +89,44 @@ func JsonNegativeFilter(bytes []byte, filter []string) (buf []byte, err error) {
 	return
 }
 
+func BuildJsonStructure(bytes []byte) (buf []byte, err error) {
+	var f interface{}
+	err = json.Unmarshal(bytes, &f)
+	if err != nil {
+		return nil, err
+	}
+	// Access the data's underlying interface
+	m := f.(map[string]interface{})
+
+	var result map[string]interface{}
+	result = make(map[string]interface{})
+
+	for key,value := range m {
+		var valueType string
+		// determine type of value
+		switch value.(type) {
+			case int, float64:
+				valueType = "number"
+			case string:
+				valueType = "string"
+			case bool:
+				valueType = "boolean"
+			case nil:
+				valueType = "null"
+			case map[string]interface{}:
+				valueType = "object"
+			case []interface{}:
+				valueType = "array"
+			default:
+				valueType = "unknown"
+		}
+		result[key] = valueType
+	}
+	buf, err = json.MarshalIndent(&result, "", "   ")
+	check(err)
+	return
+}
+
 func JsonPositiveFilter(bytes []byte, filter []string) (buf []byte, err error) {
 
 	var f interface{}

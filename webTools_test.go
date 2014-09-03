@@ -160,6 +160,14 @@ func TestBadJsonPositiveFilterSingle(t *testing.T) {
 	}
 }
 
+func TestBuildJsonStructureBasic(t *testing.T) {
+	jsonIn := []byte("{\"alpha\":\"goodData\",\"beta\":3,\"delta\":true,\"epsilon\":null,\"gamma\":[],\"zeta\":{}}")
+	jsonOut := "{\"alpha\":\"string\",\"beta\":\"number\",\"delta\":\"boolean\",\"epsilon\":\"null\",\"gamma\":\"array\",\"zeta\":\"object\"}"
+	if x, err := BuildJsonStructure(jsonIn); removeWhiteSpace(string(x)) != jsonOut || err != nil {
+		t.Errorf("BuildJsonStructure(" + string(jsonIn) + ") = " + string(x) + ", want " + jsonOut)
+	}
+}
+
 func TestJsonCompareNoDiff(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
 	result := "{}"
