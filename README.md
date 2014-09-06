@@ -25,6 +25,10 @@ Formats and returns the given JSON data. Invalid JSON will return nil and a desc
 
 Removes elements of the given JSON data with names listed in the filter array (use dot separated names for nested fields)
 
+`func BuildJsonStructure(bytes []byte) (buf []byte, err error)`
+
+Return A JSON object representing the structure of the JSON object passed in, i.e. each field with it's corresponding JSON type
+
 `func JsonPositiveFilter(bytes []byte, filter []string) (buf []byte, err error)`
 
 Keeps only the elements of the given JSON data with names listed in the filter array. (Top level fields only)

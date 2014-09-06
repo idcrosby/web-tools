@@ -36,7 +36,6 @@ func Base64Decode(decode string, url bool) (buf []byte, err error) {
 }
 
 func UrlEncode(encode string) string {
-
 	return url.QueryEscape(encode)
 }
 
@@ -51,18 +50,22 @@ func UrlDecode(decode string) (output string, err error) {
 	return
 }
 
-func ValidateJson(bytes []byte) (buf []byte, err error) {
+func ValidateJson(bytes []byte, pretty bool) (buf []byte, err error) {
 	var f interface{}
 	err = json.Unmarshal(bytes, &f)
 	if err != nil {
 		return nil, err
 	}
-	buf, err = json.MarshalIndent(&f, "", "   ")
+	if pretty {
+		buf, err = json.MarshalIndent(&f, "", "   ")
+	} else {
+		buf, err = json.Marshal(&f)
+	}
 	check(err)
 	return
 }
 
-func JsonNegativeFilter(bytes []byte, filter []string) (buf []byte, err error) {
+func JsonNegativeFilter(bytes []byte, filter []string, pretty bool) (buf []byte, err error) {
 	var f interface{}
 	err = json.Unmarshal(bytes, &f)
 	if err != nil {
@@ -84,7 +87,11 @@ func JsonNegativeFilter(bytes []byte, filter []string) (buf []byte, err error) {
 		}
 		delete(m, element)
 	}
-	buf, err = json.MarshalIndent(&m, "", "   ")
+	if pretty {
+		buf, err = json.MarshalIndent(&m, "", "   ")
+	} else {
+		buf, err = json.Marshal(&m)
+	}
 	check(err)
 	return
 }
@@ -127,7 +134,7 @@ func BuildJsonStructure(bytes []byte) (buf []byte, err error) {
 	return
 }
 
-func JsonPositiveFilter(bytes []byte, filter []string) (buf []byte, err error) {
+func JsonPositiveFilter(bytes []byte, filter []string, pretty bool) (buf []byte, err error) {
 
 	var f interface{}
 	err = json.Unmarshal(bytes, &f)
@@ -156,7 +163,11 @@ func JsonPositiveFilter(bytes []byte, filter []string) (buf []byte, err error) {
 			}
 		}
 	}
-	buf, err = json.MarshalIndent(&result, "", "   ")
+	if pretty {
+		buf, err = json.MarshalIndent(&result, "", "   ")
+	} else {
+		buf, err = json.Marshal(&result)
+	}
 	check(err)
 	return
 }
