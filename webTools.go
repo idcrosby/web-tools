@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"encoding/xml"
+	"fmt"
 	"net/url"
 	"reflect"
 	"strings"
@@ -246,6 +248,52 @@ func ConvertTimeToEpoch(convert time.Time) int64 {
 	return convert.Unix()
 }
 
+func JsonToXml(input []byte) (output []byte, err error) {
+	var f interface{}
+	err = json.Unmarshal(input, &f)
+	if err != nil {
+		return nil, err
+	}
+	// Access the data's underlying interface
+	// m := f.(map[string]interface{})
+
+	// output :=  &Struct{}
+
+	// for k,v := range m {
+
+	// }
+
+	return xml.MarshalIndent(f, "  ", "    ")
+}
+
+func ValidateXml(input []byte) (output []byte, err error) {
+
+	var f interface{}
+	err = xml.Unmarshal(input, &f)
+	if err != nil {
+		return nil, err
+	}
+	var valueType string
+		switch f.(type) {
+			case int, float64:
+				valueType = "number"
+			case string:
+				valueType = "string"
+			case bool:
+				valueType = "boolean"
+			case nil:
+				valueType = "nil"
+			case map[string]interface{}:
+				valueType = "object"
+			case []interface{}:
+				valueType = "array"
+			default:
+				valueType = "unknown"
+		}
+		fmt.Printf("xml type: " + valueType)
+		return xml.MarshalIndent(f, "  ", "    ")
+		// return nil, nil
+}
 
 // Utility Functions
 

@@ -277,8 +277,32 @@ func TestConvertTimeFromEpoch(t *testing.T) {
 }
 
 
-func TestMergeJson(t *testing.T) {
+// func TestMergeJson(t *testing.T) {
+// 	t.Errorf("not implemented")
+// }
 
+// func TestJsonToXml(t *testing.T) {
+// 	input := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+// 	expected := "<keep>goodData</keep><remove>bad data</remove>"
+// 	if x, err := JsonToXml(input); string(x) != expected || err != nil {
+// 		if err != nil {
+// 			t.Errorf("JsonToXml(" + string(input) + ") throws " + err.Error())
+// 		} else {
+// 			t.Errorf("JsonToXml(" + string(input) + ")=" + string(x) + ", want " + expected)
+// 		}
+// 	}
+// }
+
+func TestValidateXml(t *testing.T) {
+	// input := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
+	expected := []byte("<keep>goodData</keep><remove>bad data</remove>")
+	if x, err := ValidateXml(expected); string(x) != string(expected) || err != nil {
+		if err != nil {
+			t.Errorf("ValidateXml(" + string(expected) + ") THROWS " + err.Error())
+		} else {
+			t.Errorf("ValidateXml(" + string(expected) + ")=" + string(x) + ", want " + string(expected))
+		}
+	}
 }
 
 // Benchmark Tests
