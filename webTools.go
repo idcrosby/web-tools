@@ -3,6 +3,7 @@ package myTools
 import (
 	"crypto/md5"
 	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -236,6 +237,12 @@ func Md5Hash(data []byte) string {
 
 func Sha1Hash(data []byte) string {
 	h := sha1.New()
+	h.Write(data)
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+func Sha256Hash(data[] byte) string {
+	h := sha256.New()
 	h.Write(data)
 	return hex.EncodeToString(h.Sum(nil))
 }
