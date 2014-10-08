@@ -63,7 +63,6 @@ Convers the given Unix Epoch time stamp to Time type.
 	- Augment JSON comparison
 - XML <-> JSON conversion?
 - HATEOS Support/Validator/Creation/Expansion
-- AuthHeader constructor
 - OAuth stub?
 - Tests
 	- individual checks

@@ -39,7 +39,7 @@ func Base64Decode(decode string, url bool) (buf []byte, err error) {
 }
 
 func UrlEncode(encode string) string {
-	return url.QueryEscape(encode)
+	return strings.Replace(url.QueryEscape(encode), "+", "%20", -1)
 }
 
 func UrlDecode(decode string) (output string, err error) {
