@@ -1,7 +1,10 @@
 package myTools
 
 import (
+	"bytes"
 	"crypto/md5"
+	"crypto/rand"
+	"crypto/rsa"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/base64"
@@ -11,6 +14,7 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -253,6 +257,29 @@ func ConvertTimeFromEpoch(epoch int64) time.Time {
 
 func ConvertTimeToEpoch(convert time.Time) int64 {
 	return convert.Unix()
+}
+
+func GenerateKeyPair(algorithm string) []byte {
+
+	if algorithm != "RSA" {
+		return []byte("Currently only RSA supported.")
+	}
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	check(err)
+	var buffer bytes.Buffer
+	buffer.WriteString("Public Key:\n")
+	buffer.WriteString("Modulus: " + privateKey.PublicKey.N.String() + "\n")
+	buffer.WriteString("Exponent: " + strconv.Itoa(privateKey.PublicKey.E) + "\n\n")
+	buffer.WriteString("Private Key: \n")
+	buffer.WriteString("Modulus: ") // + privateKey.Primes + "\n")
+	for mod := range privateKey.Primes {
+		buffer.WriteString(strconv.Itoa(mod) + ", ")
+	}
+	// buffer.WriteString("Modulus: " + privateKey.Primes + "\n")
+	buffer.WriteString("\nExponent: " + privateKey.D.String() + "\n")
+	buffer.WriteString("\n")
+
+	return buffer.Bytes()
 }
 
 func JsonToXml(input []byte) (output []byte, err error) {

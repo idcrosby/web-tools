@@ -62,8 +62,13 @@ Convers the given Unix Epoch time stamp to Time type.
 	- Improve filtering performance (streaming)
 	- Augment JSON comparison
 - XML <-> JSON conversion?
+- Add trailing '=' characters if needed for Base64 decoding?
 - HATEOS Support/Validator/Creation/Expansion
 - OAuth stub?
 - Tests
 	- individual checks
 - Add Logging
+- HTML related tools, format, validate, etc
+- Random generator
+	- UUIDs
+	- Text, numbers, etc
