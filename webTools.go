@@ -7,6 +7,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha1"
 	"crypto/sha256"
+	"encoding/asn1"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -259,25 +260,49 @@ func ConvertTimeToEpoch(convert time.Time) int64 {
 	return convert.Unix()
 }
 
-func GenerateKeyPair(algorithm string) []byte {
+func GenerateKeyPair(algorithm string, format string) []byte {
 
 	if algorithm != "RSA" {
 		return []byte("Currently only RSA supported.")
 	}
+
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	check(err)
 	var buffer bytes.Buffer
-	buffer.WriteString("Public Key:\n")
-	buffer.WriteString("Modulus: " + privateKey.PublicKey.N.String() + "\n")
-	buffer.WriteString("Exponent: " + strconv.Itoa(privateKey.PublicKey.E) + "\n\n")
-	buffer.WriteString("Private Key: \n")
-	buffer.WriteString("Modulus: ") // + privateKey.Primes + "\n")
-	for mod := range privateKey.Primes {
-		buffer.WriteString(strconv.Itoa(mod) + ", ")
+
+	if format == "ssh-rsa" {
+		var encodeBuf  bytes.Buffer
+		buffer.WriteString("---- BEGIN SSH2 PUBLIC KEY ----")
+		
+		encodeBuf.WriteString("00000007") // 7 byte algorithm identifier
+		encodeBuf.WriteString("73 73 68 2d 72 73 61") // "ssh-rsa"
+		encodeBuf.WriteString("00000003") // 3 byte exponent
+		encodeBuf.WriteString("01 00 01") // hex for 65537 
+		encodeBuf.WriteString("00000080") //128 byte modulus
+	
+		// TODO complete...
+		buffer.WriteString(base64.StdEncoding.EncodeToString(encodeBuf.Bytes()))
+		
+		buffer.WriteString("---- END SSH2 PUBLIC KEY ----")
+
+	} else if format == "pkcs" {
+		buffer.WriteString("-----BEGIN RSA PUBLIC KEY-----")
+		buff, err := asn1.Marshal(privateKey.PublicKey)
+		check(err)
+		buffer.WriteString(base64.StdEncoding.EncodeToString(buff))
+		buffer.WriteString("-----END RSA PUBLIC KEY-----")
+	} else {
+		buffer.WriteString("=====BEGIN PUBLIC KEY=====\n")
+		buffer.WriteString("Modulus: " + privateKey.PublicKey.N.String() + "\n")
+		buffer.WriteString("Exponent: " + strconv.Itoa(privateKey.PublicKey.E) + "\n\n")
+		buffer.WriteString("=====BEGIN PRIVATE KEY=====\n")
+		buffer.WriteString("Modulus: ") // + privateKey.Primes + "\n")
+		for mod := range privateKey.Primes {
+			buffer.WriteString(strconv.Itoa(mod) + ", ")
+		}
+		// buffer.WriteString("Modulus: " + privateKey.Primes + "\n")
+		buffer.WriteString("\nExponent: " + privateKey.D.String() + "\n")
 	}
-	// buffer.WriteString("Modulus: " + privateKey.Primes + "\n")
-	buffer.WriteString("\nExponent: " + privateKey.D.String() + "\n")
-	buffer.WriteString("\n")
 
 	return buffer.Bytes()
 }
