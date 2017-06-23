@@ -22,17 +22,17 @@ import (
 
 func Base64Encode(encode []byte, url bool) string {
 	var str string
-	if (url) {
+	if url {
 		str = base64.URLEncoding.EncodeToString(encode)
 	} else {
 		str = base64.StdEncoding.EncodeToString(encode)
 	}
-	
+
 	return str
 }
 
 func Base64Decode(decode string, url bool) (buf []byte, err error) {
-	if (url) {
+	if url {
 		buf, err = base64.URLEncoding.DecodeString(decode)
 	} else {
 		buf, err = base64.StdEncoding.DecodeString(decode)
@@ -82,12 +82,12 @@ func JsonNegativeFilter(bytes []byte, filter []string, pretty bool) (buf []byte,
 	// Access the data's underlying interface
 	m := f.(map[string]interface{})
 
-	for _,element := range filter {
-		subEls := strings.Split(element,".")
+	for _, element := range filter {
+		subEls := strings.Split(element, ".")
 		node := m
-		for index,sub := range subEls {
+		for index, sub := range subEls {
 			//Check if last element
-			if (index >= (len(subEls) -1)) {
+			if index >= (len(subEls) - 1) {
 				delete(node, sub)
 			} else {
 				node = node[sub].(map[string]interface{})
@@ -116,24 +116,24 @@ func BuildJsonStructure(bytes []byte) (buf []byte, err error) {
 	var result map[string]interface{}
 	result = make(map[string]interface{})
 
-	for key,value := range m {
+	for key, value := range m {
 		var valueType string
 		// determine type of value
 		switch value.(type) {
-			case int, float64:
-				valueType = "number"
-			case string:
-				valueType = "string"
-			case bool:
-				valueType = "boolean"
-			case nil:
-				valueType = "null"
-			case map[string]interface{}:
-				valueType = "object"
-			case []interface{}:
-				valueType = "array"
-			default:
-				valueType = "unknown"
+		case int, float64:
+			valueType = "number"
+		case string:
+			valueType = "string"
+		case bool:
+			valueType = "boolean"
+		case nil:
+			valueType = "null"
+		case map[string]interface{}:
+			valueType = "object"
+		case []interface{}:
+			valueType = "array"
+		default:
+			valueType = "unknown"
 		}
 		result[key] = valueType
 	}
@@ -155,15 +155,15 @@ func JsonPositiveFilter(bytes []byte, filter []string, pretty bool) (buf []byte,
 	var result map[string]interface{}
 	result = make(map[string]interface{})
 
-	for _,element := range filter {
-		subEls := strings.Split(element,".")
+	for _, element := range filter {
+		subEls := strings.Split(element, ".")
 		node := m
 
-		for index,sub := range subEls {
+		for index, sub := range subEls {
 			//Check if last element
-			if (index >= (len(subEls) -1)) {
+			if index >= (len(subEls) - 1) {
 				// Check if element exists
-				if el,ok := node[sub]; ok {
+				if el, ok := node[sub]; ok {
 					result = MergeJson(result, subEls, el)
 				}
 			} else {
@@ -184,7 +184,7 @@ func JsonCompare(jsonOne []byte, jsonTwo []byte) (buf []byte, err error) {
 	// var result map[string]interface{}
 	// result = make(map[string]interface{})
 
-	var f,g interface{}
+	var f, g interface{}
 	err = json.Unmarshal(jsonOne, &f)
 	if err != nil {
 		return nil, err
@@ -225,7 +225,7 @@ func JsonCompare(jsonOne []byte, jsonTwo []byte) (buf []byte, err error) {
 // 			}
 // 		}
 // 		if !found {
-// 			delete(m, k)		
+// 			delete(m, k)
 // 		}
 // 		found = false
 // 	}
@@ -246,7 +246,7 @@ func Sha1Hash(data []byte) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func Sha256Hash(data[] byte) string {
+func Sha256Hash(data []byte) string {
 	h := sha256.New()
 	h.Write(data)
 	return hex.EncodeToString(h.Sum(nil))
@@ -271,18 +271,18 @@ func GenerateKeyPair(algorithm string, format string) []byte {
 	var buffer bytes.Buffer
 
 	if format == "ssh-rsa" {
-		var encodeBuf  bytes.Buffer
+		var encodeBuf bytes.Buffer
 		buffer.WriteString("---- BEGIN SSH2 PUBLIC KEY ----")
-		
-		encodeBuf.WriteString("00000007") // 7 byte algorithm identifier
+
+		encodeBuf.WriteString("00000007")             // 7 byte algorithm identifier
 		encodeBuf.WriteString("73 73 68 2d 72 73 61") // "ssh-rsa"
-		encodeBuf.WriteString("00000003") // 3 byte exponent
-		encodeBuf.WriteString("01 00 01") // hex for 65537 
-		encodeBuf.WriteString("00000080") //128 byte modulus
-	
+		encodeBuf.WriteString("00000003")             // 3 byte exponent
+		encodeBuf.WriteString("01 00 01")             // hex for 65537
+		encodeBuf.WriteString("00000080")             //128 byte modulus
+
 		// TODO complete...
 		buffer.WriteString(base64.StdEncoding.EncodeToString(encodeBuf.Bytes()))
-		
+
 		buffer.WriteString("---- END SSH2 PUBLIC KEY ----")
 
 	} else if format == "pkcs" {
@@ -333,25 +333,25 @@ func ValidateXml(input []byte) (output []byte, err error) {
 		return nil, err
 	}
 	var valueType string
-		switch f.(type) {
-			case int, float64:
-				valueType = "number"
-			case string:
-				valueType = "string"
-			case bool:
-				valueType = "boolean"
-			case nil:
-				valueType = "nil"
-			case map[string]interface{}:
-				valueType = "object"
-			case []interface{}:
-				valueType = "array"
-			default:
-				valueType = "unknown"
-		}
-		fmt.Printf("xml type: " + valueType)
-		return xml.MarshalIndent(f, "  ", "    ")
-		// return nil, nil
+	switch f.(type) {
+	case int, float64:
+		valueType = "number"
+	case string:
+		valueType = "string"
+	case bool:
+		valueType = "boolean"
+	case nil:
+		valueType = "nil"
+	case map[string]interface{}:
+		valueType = "object"
+	case []interface{}:
+		valueType = "array"
+	default:
+		valueType = "unknown"
+	}
+	fmt.Printf("xml type: " + valueType)
+	return xml.MarshalIndent(f, "  ", "    ")
+	// return nil, nil
 }
 
 // Utility Functions
@@ -360,7 +360,7 @@ func MergeJson(input map[string]interface{}, subEls []string, el interface{}) ma
 
 	result := input
 
-	// If last element, add 
+	// If last element, add
 	// TODO currently will overwrite, add flag to potentially skip
 	if len(subEls) == 1 {
 		result[subEls[0]] = el
@@ -368,11 +368,11 @@ func MergeJson(input map[string]interface{}, subEls []string, el interface{}) ma
 	}
 
 	var node map[string]interface{}
-	if _,ok := result[subEls[0]]; ok {
+	if _, ok := result[subEls[0]]; ok {
 		node = result[subEls[0]].(map[string]interface{})
 	} else {
 		node = make(map[string]interface{})
-	}	
+	}
 	result[subEls[0]] = MergeJson(node, subEls[1:], el)
 
 	return result
@@ -383,7 +383,7 @@ func CompareJson(m1 map[string]interface{}, m2 map[string]interface{}) map[strin
 	result = make(map[string]interface{})
 
 	for k, el := range m1 {
-		if el2,ok := m2[k]; ok {
+		if el2, ok := m2[k]; ok {
 			if reflect.ValueOf(el).Kind() == reflect.Map {
 				subCompare := CompareJson(el.(map[string]interface{}), el2.(map[string]interface{}))
 				if len(subCompare) > 0 {
@@ -391,13 +391,13 @@ func CompareJson(m1 map[string]interface{}, m2 map[string]interface{}) map[strin
 				}
 			} else if reflect.ValueOf(el).Kind() == reflect.Slice {
 				if !CompareSlices(el.([]interface{}), el2.([]interface{})) {
-					result[k + "_1"] = el
-					result[k + "_2"] = el2
+					result[k+"_1"] = el
+					result[k+"_2"] = el2
 				}
 			} else {
 				if el != el2 {
-					result[k + "_1"] = el //"diff" //el + "/" + el2
-					result[k + "_2"] = el2
+					result[k+"_1"] = el //"diff" //el + "/" + el2
+					result[k+"_2"] = el2
 				}
 			}
 		} else {
@@ -414,7 +414,7 @@ func CompareSlices(s1 []interface{}, s2 []interface{}) bool {
 		return false
 	}
 
-	for ix,el := range s1 {
+	for ix, el := range s1 {
 		if s2[ix] != el {
 			return false
 		}
@@ -423,4 +423,8 @@ func CompareSlices(s1 []interface{}, s2 []interface{}) bool {
 	return true
 }
 
-func check(err error) { if err != nil { panic(err) } }
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

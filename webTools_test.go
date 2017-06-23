@@ -6,15 +6,14 @@ import (
 	"time"
 )
 
-
 // Basic Unit Tests
 
 func TestBase64Encode(t *testing.T) {
 	str := "YWJjMTIzIT8kKiYoKSctPUB+"
 	data := []byte("abc123!?$*&()'-=@~")
-	if x:= Base64Encode(data, false); x != str  {
+	if x := Base64Encode(data, false); x != str {
 		t.Errorf("Base64Encode(" + string(data) + ") = " + x + ", want " + str)
-	}	
+	}
 }
 
 func TestBase64Decode(t *testing.T) {
@@ -35,9 +34,9 @@ func TestBase64DecodeBadData(t *testing.T) {
 func TestBase64UrlEncode(t *testing.T) {
 	encoded := "URL+encode%3A%2F%2Fthis"
 	data := "URL encode://this"
-	if x:= UrlEncode(data); x != encoded  {
+	if x := UrlEncode(data); x != encoded {
 		t.Errorf("UrlEncode(" + data + ") = " + x + ", want " + encoded)
-	}	
+	}
 }
 
 func TestBase64UrlDecode(t *testing.T) {
@@ -57,7 +56,7 @@ func TestValidateJsonValid(t *testing.T) {
 
 func TestValidateJsonInvalid(t *testing.T) {
 	invalidJson := []byte("{\"sample\":\"data\",\"missing\"}")
-	if x, err := ValidateJson(invalidJson, false); x != nil  || err == nil {
+	if x, err := ValidateJson(invalidJson, false); x != nil || err == nil {
 		t.Errorf("ValidateJson(" + string(invalidJson) + ") = " + removeWhiteSpace(string(x)) + ", want nil")
 	}
 }
@@ -85,7 +84,7 @@ func TestDeepJsonNegativeFilter(t *testing.T) {
 func TestDeepMultiJsonNegativeFilter(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true,\"subThree\":{\"deepRemove\":false}}}")
 	jsonOut := "{\"remove\":{\"subThree\":{\"deepRemove\":false},\"subTwo\":true}}"
-	filter := []string{"remove.subOne","keep","remove.subThree.missing"}
+	filter := []string{"remove.subOne", "keep", "remove.subThree.missing"}
 
 	if x, err := JsonNegativeFilter(jsonIn, filter, true); removeWhiteSpace(string(x)) != jsonOut || err != nil {
 		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
@@ -95,7 +94,7 @@ func TestDeepMultiJsonNegativeFilter(t *testing.T) {
 func TestDeepMultiJsonNegativeFilterTwo(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true,\"subThree\":{\"deepRemove\":false}}}")
 	jsonOut := "{\"remove\":{\"subThree\":{},\"subTwo\":true}}"
-	filter := []string{"remove.subOne","keep","remove.subThree.deepRemove"}
+	filter := []string{"remove.subOne", "keep", "remove.subThree.deepRemove"}
 
 	if x, err := JsonNegativeFilter(jsonIn, filter, true); removeWhiteSpace(string(x)) != jsonOut || err != nil {
 		t.Errorf("JsonNegativeFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
@@ -124,7 +123,7 @@ func TestJsonPositiveFilterSingle(t *testing.T) {
 func TestDeepJsonPositiveFilter(t *testing.T) {
 	jsonIn := []byte("{\"keepMe\":\"goodData\",\"remove\":{\"subOne\":\"bad data\",\"subTwo\":true}}")
 	jsonOut := "{\"keepMe\":\"goodData\",\"remove\":{\"subTwo\":true}}"
-	filter := []string{"keepMe","remove.subTwo"}
+	filter := []string{"keepMe", "remove.subTwo"}
 
 	if x, err := JsonPositiveFilter(jsonIn, filter, true); removeWhiteSpace(string(x)) != jsonOut || err != nil {
 		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
@@ -134,7 +133,7 @@ func TestDeepJsonPositiveFilter(t *testing.T) {
 func TestDeepMultiJsonPositiveFilter(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}")
 	jsonOut := "{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}"
-	filter := []string{"remove","keep"}
+	filter := []string{"remove", "keep"}
 
 	if x, err := JsonPositiveFilter(jsonIn, filter, true); removeWhiteSpace(string(x)) != jsonOut || err != nil {
 		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
@@ -144,7 +143,7 @@ func TestDeepMultiJsonPositiveFilter(t *testing.T) {
 func TestJsonPositiveFilterAnother(t *testing.T) {
 	jsonIn := []byte("{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}")
 	jsonOut := "{\"keep\":\"goodData\",\"remove\":{\"subOne\":\"bad_data\",\"subTwo\":true}}"
-	filter := []string{"remove.subOne","keep","remove.subTwo"}
+	filter := []string{"remove.subOne", "keep", "remove.subTwo"}
 
 	if x, err := JsonPositiveFilter(jsonIn, filter, false); removeWhiteSpace(string(x)) != jsonOut || err != nil {
 		t.Errorf("JsonPositiveFilter(" + string(jsonIn) + "," + arrayToString(filter) + ") = " + removeWhiteSpace(string(x)) + ", want " + string(jsonOut))
@@ -263,7 +262,7 @@ func TestConvertTimeToEpoch(t *testing.T) {
 	timeString := "2014-08-15 15:27:14 +0200 CEST"
 	myTime, _ := time.Parse("2006-01-02 15:04:05 -0700 MST", timeString)
 	if x := ConvertTimeToEpoch(myTime); x != epoch {
-		t.Errorf("ConvertTimeToEpoch(" + myTime.String() + ")=%v, want %v", x, epoch)
+		t.Errorf("ConvertTimeToEpoch("+myTime.String()+")=%v, want %v", x, epoch)
 	}
 }
 
@@ -272,10 +271,9 @@ func TestConvertTimeFromEpoch(t *testing.T) {
 	epoch = 1408109234
 	timeString := "2014-08-15 15:27:14 +0200 CEST"
 	if x := ConvertTimeFromEpoch(epoch); x.String() != timeString {
-		t.Errorf("ConvertTimeFromEpoch(%v)=" + x.String() + ", want " + timeString, epoch)
+		t.Errorf("ConvertTimeFromEpoch(%v)="+x.String()+", want "+timeString, epoch)
 	}
 }
-
 
 // func TestMergeJson(t *testing.T) {
 // 	t.Errorf("not implemented")
@@ -344,7 +342,7 @@ func BenchmarkJsonPositiveFilter(b *testing.B) {
 	}
 }
 
-func BenchmarkJsonCompare(b * testing.B) {
+func BenchmarkJsonCompare(b *testing.B) {
 	jsonOne := []byte("{\"keep\":\"goodData\",\"remove\":\"bad data\"}")
 	jsonTwo := []byte("{\"keep\":\"other_data\",\"remove\":\"bad data\"}")
 	for i := 0; i < b.N; i++ {
@@ -387,7 +385,9 @@ func BenchmarkConvertTimeFromEpoch(b *testing.B) {
 // Util Methods
 
 func arrayToString(input []string) (output string) {
-	for _, value := range input { output += string(value) }
+	for _, value := range input {
+		output += string(value)
+	}
 	return
 }
 
